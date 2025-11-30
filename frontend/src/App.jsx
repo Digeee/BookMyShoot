@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import SearchResults from './pages/SearchResults';
 import ServiceDetail from './pages/ServiceDetail';
+import Profile from './pages/Profile';
 import ClientDashboard from './pages/ClientDashboard';
 import ProDashboard from './pages/ProDashboard';
 import Navbar from './components/Navbar';
@@ -22,6 +23,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/services/:id" element={<ServiceDetail />} />
+            <Route path="/profiles/:id" element={<Profile />} />
             <Route path="/dashboard/client" element={<ClientDashboard />} />
             <Route path="/dashboard/pro" element={<ProDashboard />} />
           </Routes>
