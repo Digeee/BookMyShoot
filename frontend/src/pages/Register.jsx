@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const { name, email, phone, password, password2, role } = formData;
   
@@ -25,7 +27,7 @@ const Register = () => {
     e.preventDefault();
     
     if (password !== password2) {
-      return setError('Passwords do not match');
+      return setError(t('passwordsDoNotMatch'));
     }
     
     setLoading(true);
@@ -54,10 +56,10 @@ const Register = () => {
           navigate('/dashboard/client');
         }
       } else {
-        setError(data.error || 'Registration failed');
+        setError(data.error || t('registrationFailed'));
       }
     } catch (err) {
-      setError('Server error. Please try again.');
+      setError(t('serverError'));
     } finally {
       setLoading(false);
     }
@@ -68,7 +70,7 @@ const Register = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+            {t('createAccount')}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
@@ -80,7 +82,7 @@ const Register = () => {
           <div className="rounded-md shadow-sm space-y-4">
             <div>
               <label htmlFor="name" className="sr-only">
-                Full Name
+                {t('name')}
               </label>
               <input
                 id="name"
@@ -90,12 +92,12 @@ const Register = () => {
                 value={name}
                 onChange={onChange}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Full Name"
+                placeholder={t('name')}
               />
             </div>
             <div>
               <label htmlFor="email-address" className="sr-only">
-                Email address
+                {t('email')}
               </label>
               <input
                 id="email-address"
@@ -106,12 +108,12 @@ const Register = () => {
                 value={email}
                 onChange={onChange}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                placeholder={t('email')}
               />
             </div>
             <div>
               <label htmlFor="phone" className="sr-only">
-                Phone Number
+                {t('phone')}
               </label>
               <input
                 id="phone"
@@ -120,12 +122,12 @@ const Register = () => {
                 value={phone}
                 onChange={onChange}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Phone Number (optional)"
+                placeholder={`${t('phone')} (${t('optional')})`}
               />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Password
+                {t('password')}
               </label>
               <input
                 id="password"
@@ -136,12 +138,12 @@ const Register = () => {
                 value={password}
                 onChange={onChange}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                placeholder={t('password')}
               />
             </div>
             <div>
               <label htmlFor="password2" className="sr-only">
-                Confirm Password
+                {t('confirmPassword')}
               </label>
               <input
                 id="password2"
@@ -152,12 +154,12 @@ const Register = () => {
                 value={password2}
                 onChange={onChange}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
+                placeholder={t('confirmPassword')}
               />
             </div>
             <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                I am a:
+                {t('iAm')}
               </label>
               <select
                 id="role"
@@ -166,8 +168,8 @@ const Register = () => {
                 onChange={onChange}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               >
-                <option value="client">Client (Looking to book services)</option>
-                <option value="pro">Professional (Photographer/Videographer/Editor)</option>
+                <option value="client">{t('clientLooking')}</option>
+                <option value="pro">{t('professional')}</option>
               </select>
             </div>
           </div>
@@ -175,7 +177,7 @@ const Register = () => {
           <div className="flex items-center justify-between">
             <div className="text-sm">
               <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Already have an account? Sign in
+                {t('alreadyHaveAccount')} {t('signIn')}
               </Link>
             </div>
           </div>
@@ -186,7 +188,7 @@ const Register = () => {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {loading ? 'Creating account...' : 'Sign up'}
+              {loading ? `${t('creatingAccount')}...` : t('signUp')}
             </button>
           </div>
         </form>

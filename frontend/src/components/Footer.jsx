@@ -1,41 +1,44 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
+  
   return (
     <footer className="bg-gray-800 text-white py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">BookMyShoot</h3>
-            <p className="text-gray-300">Connecting clients with talented photographers, videographers, and editors in Sri Lanka.</p>
+            <p className="text-gray-300">{t('connectingClients')}</p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">For Clients</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('forClients')}</h3>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-white">Find Professionals</a></li>
-              <li><a href="#" className="hover:text-white">How It Works</a></li>
-              <li><a href="#" className="hover:text-white">Pricing</a></li>
+              <li><a href="#" className="hover:text-white">{t('findPros')}</a></li>
+              <li><a href="#" className="hover:text-white">{t('howItWorks')}</a></li>
+              <li><a href="#" className="hover:text-white">{t('pricing')}</a></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">For Professionals</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('forProfessionals')}</h3>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-white">Join as Pro</a></li>
-              <li><a href="#" className="hover:text-white">Pro Resources</a></li>
-              <li><a href="#" className="hover:text-white">Success Stories</a></li>
+              <li><a href="#" className="hover:text-white">{t('joinAsPro')}</a></li>
+              <li><a href="#" className="hover:text-white">{t('proResources')}</a></li>
+              <li><a href="#" className="hover:text-white">{t('successStories')}</a></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Support</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('support')}</h3>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-white">Help Center</a></li>
-              <li><a href="#" className="hover:text-white">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-white">{t('helpCenter')}</a></li>
+              <li><a href="#" className="hover:text-white">{t('contactUs')}</a></li>
+              <li><a href="#" className="hover:text-white">{t('termsOfService')}</a></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-          <p>&copy; 2025 BookMyShoot. All rights reserved.</p>
+          <p>&copy; 2025 BookMyShoot. {t('allRightsReserved')}</p>
         </div>
       </div>
     </footer>
