@@ -9,6 +9,7 @@ import ClientDashboard from './pages/ClientDashboard';
 import ProDashboard from './pages/ProDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
+import Payment from './pages/Payment';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './App.css';
@@ -30,6 +31,7 @@ function App() {
             <Route path="/dashboard/pro" element={<ProDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/payment/:id" element={<Payment />} />
           </Routes>
         </main>
         <Footer />
