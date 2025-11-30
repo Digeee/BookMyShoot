@@ -1,0 +1,497 @@
+openapi: 3.0.3
+info:
+  title: BookMyShoot API
+  description: Marketplace API for booking photographers, videographers and editors in Sri Lanka
+  version: 1.0.0
+servers:
+  - url: https://api.bookmyshoot.com/v1
+    description: Production server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+paths:
+  # Authentication
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                role:
+                  type: string
+                  enum: [client, pro]
+              required:
+                - name
+                - email
+                - password
+                - role
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '409':
+          description: Email already exists
+
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+
+  # Services
+  /services:
+    get:
+      summary: Search services
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: minPrice
+          in: query
+          schema:
+            type: number
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+        - name: rating
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+
+  /services/{id}:
+    get:
+      summary: Get service details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Service details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceDetail'
+
+  # Profiles
+  /profiles/{id}:
+    get:
+      summary: Get user profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+  # Bookings
+  /bookings:
+    post:
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service_id:
+                  type: integer
+                package_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                start_time:
+                  type: string
+                end_time:
+                  type: string
+              required:
+                - service_id
+                - date
+                - start_time
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Bad request
+        '409':
+          description: Time slot not available
+
+  /bookings/{id}/accept:
+    patch:
+      summary: Accept a booking (Pro only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking accepted
+        '403':
+          description: Forbidden
+        '404':
+          description: Booking not found
+
+  /bookings/{id}/reject:
+    patch:
+      summary: Reject a booking (Pro only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking rejected
+        '403':
+          description: Forbidden
+        '404':
+          description: Booking not found
+
+  # Payments
+  /payments/checkout:
+    post:
+      summary: Initiate payment checkout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                booking_id:
+                  type: integer
+                amount:
+                  type: number
+                currency:
+                  type: string
+              required:
+                - booking_id
+                - amount
+      responses:
+        '200':
+          description: Payment initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payment_url:
+                    type: string
+        '400':
+          description: Bad request
+
+  # Dashboard
+  /dashboard/pro:
+    get:
+      summary: Get pro dashboard data
+      responses:
+        '200':
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bookings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  earnings:
+                    type: number
+                  upcoming_events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+
+  /dashboard/client:
+    get:
+      summary: Get client dashboard data
+      responses:
+        '200':
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bookings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  upcoming_events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+
+  # Admin
+  /admin/users:
+    get:
+      summary: Get all users (Admin only)
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /admin/users/{id}:
+    delete:
+      summary: Delete user (Admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [client, pro, admin]
+        locale:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Profile:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        business_name:
+          type: string
+        bio:
+          type: string
+        location_city:
+          type: string
+        location_area:
+          type: string
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+        languages:
+          type: string
+        avg_rating:
+          type: number
+          format: float
+        portfolio_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+        pro_id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        base_price:
+          type: number
+        duration_minutes:
+          type: integer
+        is_active:
+          type: boolean
+
+    ServiceDetail:
+      allOf:
+        - $ref: '#/components/schemas/Service'
+        - type: object
+          properties:
+            description:
+              type: string
+            packages:
+              type: array
+              items:
+                $ref: '#/components/schemas/Package'
+            availability:
+              type: array
+              items:
+                $ref: '#/components/schemas/Availability'
+
+    Package:
+      type: object
+      properties:
+        id:
+          type: integer
+        service_id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        hours:
+          type: number
+        details:
+          type: string
+
+    Availability:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date
+        start_time:
+          type: string
+        end_time:
+          type: string
+        is_booked:
+          type: boolean
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        client_id:
+          type: integer
+        pro_id:
+          type: integer
+        service_id:
+          type: integer
+        package_id:
+          type: integer
+        date:
+          type: string
+          format: date
+        start_time:
+          type: string
+        end_time:
+          type: string
+        status:
+          type: string
+          enum: [pending, confirmed, completed, cancelled, rejected]
+        total_price:
+          type: number
+        deposit_paid:
+          type: number
+        created_at:
+          type: string
+          format: date-time
