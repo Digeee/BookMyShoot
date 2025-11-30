@@ -167,6 +167,10 @@ const si = {
     helpCenter: "උදව් මධ්‍යස්ථානය",
     contactUs: "අප අමතන්න",
     termsOfService: "සේවා නියමයන්",
+    pricing: "මිල",
+    proResources: "වෘත්තීය සම්පත්",
+    successStories: "සාර්ථකත්ව කතා",
+    allRightsReserved: "සියලුම හිමිකම් ඇවිරිණි.",
     
     // Login/Register
     email: "ඊමේල්",
@@ -179,8 +183,14 @@ const si = {
     professional: "වෘත්තීය පුද්ගලයෙකු (ඡායාරූප ශිල්පියා/දෘශ්‍ය ශිල්පියා/සංස්කරණ ශිල්පියා)",
     alreadyHaveAccount: "දැනටමත් ගිණුමක් තිබේ ද?",
     signIn: "පිවිසීම",
+    signingIn: "පිවිසෙමින්",
     dontHaveAccount: "ගිණුමක් නැද් ද?",
     createAccount: "ගිණුමක් සාදන්න",
+    creatingAccount: "ගිණුමක් සාදමින්",
+    passwordsDoNotMatch: "මුරපද දෙක නොගැළපේ",
+    registrationFailed: "ලියාපදිංචි කිරීම අසාර්ථක විය",
+    serverError: "සේවාදායක දෝෂයකි. පසුව නැවත උත්සාහ කරන්න.",
+    optional: "විකල්ප",
     
     // Search
     findProfessionals: "වෘත්තීය පුද්ගලයින් සොයන්න",
@@ -288,6 +298,10 @@ const ta = {
     helpCenter: "உதவி மையம்",
     contactUs: "எங்களை தொடர்பு கொள்ள",
     termsOfService: "சேவை விதிமுறைகள்",
+    pricing: "விலை",
+    proResources: "தொழில்நுட்ப வளங்கள்",
+    successStories: "வெற்றி கதைகள்",
+    allRightsReserved: "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
     
     // Login/Register
     email: "மின்னஞ்சல்",
@@ -300,8 +314,14 @@ const ta = {
     professional: "தொழில்நுட்பவாதி (புகைப்படக் கலைஞர்/வீடியோ கலைஞர்/திருத்தியவர்)",
     alreadyHaveAccount: "ஏற்கனவே கணக்கு உள்ளதா?",
     signIn: "உள்நுழைய",
+    signingIn: "உள்நுழைகிறது",
     dontHaveAccount: "கணக்கு இல்லையா?",
     createAccount: "கணக்கை உருவாக்கவும்",
+    creatingAccount: "கணக்கை உருவாக்குகிறது",
+    passwordsDoNotMatch: "கடவுச்சொற்கள் பொருந்தவில்லை",
+    registrationFailed: "பதிவு தோல்வியுற்றது",
+    serverError: "சேவையக பிழை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+    optional: "விருப்ப",
     
     // Search
     findProfessionals: "தொழில்நுட்பவாதிகளை கண்டறியவும்",
