@@ -7,6 +7,8 @@ import ServiceDetail from './pages/ServiceDetail';
 import Profile from './pages/Profile';
 import ClientDashboard from './pages/ClientDashboard';
 import ProDashboard from './pages/ProDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminLogin from './pages/AdminLogin';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './App.css';
@@ -26,6 +28,8 @@ function App() {
             <Route path="/profiles/:id" element={<Profile />} />
             <Route path="/dashboard/client" element={<ClientDashboard />} />
             <Route path="/dashboard/pro" element={<ProDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
           </Routes>
         </main>
         <Footer />
