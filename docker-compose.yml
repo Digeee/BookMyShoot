@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:8.0
+    container_name: bookmyshoot_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: bookmyshoot
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: bookmyshoot
+      MYSQL_PASSWORD: bookmypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    networks:
+      - bookmyshoot_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bookmyshoot_backend
+    restart: always
+    depends_on:
+      - database
+    environment:
+      NODE_ENV: production
+      DB_HOST: database
+      DB_USER: bookmyshoot
+      DB_PASSWORD: bookmypassword
+      DB_NAME: bookmyshoot
+      JWT_SECRET: your_production_jwt_secret_here
+      CLOUDINARY_CLOUD_NAME: your_cloudinary_cloud_name
+      CLOUDINARY_API_KEY: your_cloudinary_api_key
+      CLOUDINARY_API_SECRET: your_cloudinary_api_secret
+    ports:
+      - "3000:3000"
+    networks:
+      - bookmyshoot_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bookmyshoot_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - bookmyshoot_network
+
+volumes:
+  db_data:
+
+networks:
+  bookmyshoot_network:
+    driver: bridge
