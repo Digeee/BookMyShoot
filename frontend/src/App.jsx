@@ -17,7 +17,7 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen font-primary">
         <Navbar />
         <main className="flex-grow">
           <Routes>
