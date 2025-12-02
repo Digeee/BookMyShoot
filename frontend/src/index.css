@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Handlee&family=Parisienne&display=swap');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Elegant handwriting fonts */
+  --font-handwriting: 'Dancing Script', 'Great Vibes', 'Handlee', 'Parisienne', cursive;
+  --font-primary: 'Dancing Script', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  font-family: var(--font-primary);
   line-height: 1.5;
   font-weight: 400;
 
@@ -26,9 +32,9 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-handwriting);
+  font-weight: 700;
 }
 
 button {
@@ -50,6 +56,13 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Emoji support */
+.emoji {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  display: inline-block;
+  vertical-align: middle;
 }
 
 @media (prefers-color-scheme: light) {
