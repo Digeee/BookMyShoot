@@ -7,8 +7,3 @@ router.get('/', availabilityController.getAvailability);
 
 // Add new availability slots
 router.post('/', availabilityController.addAvailability);
-
-// Delete an availability slot
-router.delete('/:id', availabilityController.deleteAvailability);
-
-module.exports = router;
