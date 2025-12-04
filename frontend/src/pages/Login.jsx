@@ -57,28 +57,30 @@ const Login = () => {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8 font-primary">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            🔐 {t('signIn')}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 px-4 sm:px-6 lg:px-8 font-primary">
+      <div className="glass-container max-w-md w-full space-y-8 p-8 rounded-3xl shadow-2xl">
+        <div className="text-center">
+          <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center mb-6">
+            <span className="text-3xl text-white">🔐</span>
+          </div>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900 gradient-text">
+            {t('signIn')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            {t('signInToYourAccount')} ✨
+            {t('signInToYourAccount')}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
+            <div className="rounded-xl bg-red-50 p-4 border border-red-100">
               <div className="text-sm text-red-700 flex items-center gap-2">
-                <span>⚠️</span> {error}
+                <span className="text-lg">⚠️</span> {error}
               </div>
             </div>
           )}
-          <input type="hidden" name="remember" value="true" />
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="space-y-4">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('email')}
               </label>
               <div className="relative">
@@ -93,13 +95,13 @@ const Login = () => {
                   required
                   value={email}
                   onChange={onChange}
-                  className="appearance-none rounded-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="glass-card appearance-none relative block w-full pl-10 pr-3 py-4 border border-gray-200 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
                   placeholder={t('email')}
                 />
               </div>
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('password')}
               </label>
               <div className="relative">
@@ -114,7 +116,7 @@ const Login = () => {
                   required
                   value={password}
                   onChange={onChange}
-                  className="appearance-none rounded-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="glass-card appearance-none relative block w-full pl-10 pr-3 py-4 border border-gray-200 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
                   placeholder={t('password')}
                 />
               </div>
@@ -123,9 +125,14 @@ const Login = () => {
           
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1">
+              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1 transition-colors">
                 <span>📝</span> {t('dontHaveAccount')} {t('signUp')}
               </Link>
+            </div>
+            <div className="text-sm">
+              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                {t('forgotPassword')}?
+              </a>
             </div>
           </div>
           
@@ -133,11 +140,12 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105"
+              className="modern-btn group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-[1.02]"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <span>⏳</span> {t('signingIn')}...
+                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span> 
+                  {t('signingIn')}...
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
@@ -147,6 +155,34 @@ const Login = () => {
             </button>
           </div>
         </form>
+        
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">
+                {t('orContinueWith')}
+              </span>
+            </div>
+          </div>
+          
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div>
+              <a href="#" className="glass-card w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                <span>🇬</span>
+                Google
+              </a>
+            </div>
+            <div>
+              <a href="#" className="glass-card w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                <span>📱</span>
+                Facebook
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
