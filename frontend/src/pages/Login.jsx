@@ -57,36 +57,26 @@ const Login = () => {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 px-4 sm:px-6 lg:px-8 font-primary">
-      <div className="glass-container max-w-md w-full space-y-8 p-8 rounded-3xl shadow-2xl">
-        <div className="text-center">
-          <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center mb-6">
-            <span className="text-3xl text-white">🔐</span>
+    <div className="min-h-screen flex items-center justify-center bg-background py-2xl">
+      <div className="card w-full max-w-md">
+        <div className="card-content">
+          <div className="text-center mb-2xl">
+            <h2 className="section-title mb-sm">{t('signIn')}</h2>
+            <p className="text-secondary">{t('signInToYourAccount')}</p>
           </div>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900 gradient-text">
-            {t('signIn')}
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            {t('signInToYourAccount')}
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={onSubmit}>
-          {error && (
-            <div className="rounded-xl bg-red-50 p-4 border border-red-100">
-              <div className="text-sm text-red-700 flex items-center gap-2">
-                <span className="text-lg">⚠️</span> {error}
+          
+          <form onSubmit={onSubmit}>
+            {error && (
+              <div className="bg-error/10 border border-error/20 text-error rounded-md p-md mb-lg">
+                {error}
               </div>
-            </div>
-          )}
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('email')}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500">📧</span>
-                </div>
+            )}
+            
+            <div className="space-y-lg">
+              <div>
+                <label htmlFor="email-address" className="form-label">
+                  {t('email')}
+                </label>
                 <input
                   id="email-address"
                   name="email"
@@ -95,19 +85,15 @@ const Login = () => {
                   required
                   value={email}
                   onChange={onChange}
-                  className="glass-card appearance-none relative block w-full pl-10 pr-3 py-4 border border-gray-200 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
+                  className="form-input"
                   placeholder={t('email')}
                 />
               </div>
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('password')}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500">🔒</span>
-                </div>
+              
+              <div>
+                <label htmlFor="password" className="form-label">
+                  {t('password')}
+                </label>
                 <input
                   id="password"
                   name="password"
@@ -116,70 +102,55 @@ const Login = () => {
                   required
                   value={password}
                   onChange={onChange}
-                  className="glass-card appearance-none relative block w-full pl-10 pr-3 py-4 border border-gray-200 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200"
+                  className="form-input"
                   placeholder={t('password')}
                 />
               </div>
             </div>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1 transition-colors">
-                <span>📝</span> {t('dontHaveAccount')} {t('signUp')}
-              </Link>
+            
+            <div className="flex items-center justify-between mt-lg mb-xl">
+              <div className="text-sm">
+                <Link to="/register" className="text-primary hover:text-secondary transition-colors">
+                  {t('dontHaveAccount')} {t('signUp')}
+                </Link>
+              </div>
+              <div className="text-sm">
+                <a href="#" className="text-primary hover:text-secondary transition-colors">
+                  {t('forgotPassword')}?
+                </a>
+              </div>
             </div>
-            <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                {t('forgotPassword')}?
-              </a>
-            </div>
-          </div>
-          
-          <div>
+            
             <button
               type="submit"
               disabled={loading}
-              className="modern-btn group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-[1.02]"
+              className="btn btn-primary w-full"
             >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span> 
-                  {t('signingIn')}...
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <span>🔑</span> {t('signIn')}
-                </span>
-              )}
+              {loading ? `${t('signingIn')}...` : t('signIn')}
             </button>
-          </div>
-        </form>
-        
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">
-                {t('orContinueWith')}
-              </span>
-            </div>
-          </div>
+          </form>
           
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <div>
-              <a href="#" className="glass-card w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200">
+          <div className="mt-xl">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-md bg-surface text-secondary">
+                  {t('orContinueWith')}
+                </span>
+              </div>
+            </div>
+            
+            <div className="mt-lg grid grid-cols-2 gap-md">
+              <button className="btn btn-secondary flex items-center justify-center gap-sm">
                 <span>🇬</span>
                 Google
-              </a>
-            </div>
-            <div>
-              <a href="#" className="glass-card w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200">
+              </button>
+              <button className="btn btn-secondary flex items-center justify-center gap-sm">
                 <span>📱</span>
                 Facebook
-              </a>
+              </button>
             </div>
           </div>
         </div>
