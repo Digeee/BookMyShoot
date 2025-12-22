@@ -45,7 +45,11 @@ describe('Services Controller', () => {
 
       await getServices(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(mockServices);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockServices,
+        pagination: expect.any(Object)
+      });
       expect(db.execute).toHaveBeenCalled();
     });
 
@@ -75,7 +79,11 @@ describe('Services Controller', () => {
 
       await getServices(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(mockServices);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockServices,
+        pagination: expect.any(Object)
+      });
     });
   });
 
@@ -141,7 +149,10 @@ describe('Services Controller', () => {
         availability: mockAvailability
       };
 
-      expect(res.json).toHaveBeenCalledWith(expectedResponse);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: expectedResponse
+      });
     });
 
     it('should return 404 if service not found', async () => {
@@ -162,7 +173,13 @@ describe('Services Controller', () => {
       await getServiceById(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Service not found' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: false,
+        error: {
+          code: 'SERVICE_NOT_FOUND',
+          message: 'Service not found'
+        }
+      });
     });
   });
 });

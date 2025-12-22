@@ -47,13 +47,16 @@ describe('Auth Controller', () => {
 
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith({
-        token: 'token',
-        user: {
-          id: 1,
-          name: 'John Doe',
-          email: 'john@example.com',
-          phone: '+94771234567',
-          role: 'client'
+        success: true,
+        data: {
+          token: 'token',
+          user: {
+            id: 1,
+            name: 'John Doe',
+            email: 'john@example.com',
+            phone: '+94771234567',
+            role: 'client'
+          }
         }
       });
     });
@@ -80,7 +83,13 @@ describe('Auth Controller', () => {
       await register(req, res);
 
       expect(res.status).toHaveBeenCalledWith(409);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Email already exists' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: false,
+        error: {
+          code: 'EMAIL_EXISTS',
+          message: 'Email already exists'
+        }
+      });
     });
   });
 
@@ -117,13 +126,16 @@ describe('Auth Controller', () => {
       await login(req, res);
 
       expect(res.json).toHaveBeenCalledWith({
-        token: 'token',
-        user: {
-          id: 1,
-          name: 'John Doe',
-          email: 'john@example.com',
-          phone: '+94771234567',
-          role: 'client'
+        success: true,
+        data: {
+          token: 'token',
+          user: {
+            id: 1,
+            name: 'John Doe',
+            email: 'john@example.com',
+            phone: '+94771234567',
+            role: 'client'
+          }
         }
       });
     });
@@ -159,7 +171,13 @@ describe('Auth Controller', () => {
       await login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid credentials' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: false,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: 'Invalid credentials'
+        }
+      });
     });
   });
 });

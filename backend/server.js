@@ -27,8 +27,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rate limiting
-const limiter = rateLimit({
+// Enhanced rate limiting
+const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
   message: {
@@ -37,9 +37,32 @@ const limiter = rateLimit({
       code: 'RATE_LIMIT_EXCEEDED',
       message: 'Too many requests, please try again later.'
     }
-  }
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
-app.use(limiter);
+
+// Stricter rate limiting for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs for auth
+  message: {
+    success: false,
+    error: {
+      code: 'AUTH_RATE_LIMIT_EXCEEDED',
+      message: 'Too many authentication attempts. Please try again later.'
+    }
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true // Only count failed requests
+});
+
+// Apply general rate limiting to all requests
+app.use(generalLimiter);
+
+// Apply stricter rate limiting to auth routes
+app.use('/api/v1/auth', authLimiter);
 
 // Routes
 app.use('/api/v1/auth', require('./routes/auth.routes'));
@@ -50,6 +73,7 @@ app.use('/api/v1/payments', require('./routes/payments.routes'));
 app.use('/api/v1/dashboard', require('./routes/dashboard.routes'));
 app.use('/api/v1/admin', require('./routes/admin.routes'));
 app.use('/api/v1/chatbot', require('./routes/chatbot/chatbot.routes'));
+app.use('/api/v1/notifications', require('./routes/notifications.routes'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

@@ -72,7 +72,13 @@ describe('Bookings Controller', () => {
       await createBooking(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Service not found or inactive' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: false,
+        error: {
+          code: 'SERVICE_NOT_FOUND',
+          message: 'Service not found or inactive'
+        }
+      });
     });
   });
 
@@ -99,7 +105,10 @@ describe('Bookings Controller', () => {
 
       await acceptBooking(req, res);
 
-      expect(res.json).toHaveBeenCalledWith({ message: 'Booking accepted successfully' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: true,
+        message: 'Booking accepted successfully' 
+      });
     });
 
     it('should return 404 if booking not found', async () => {
@@ -124,7 +133,13 @@ describe('Bookings Controller', () => {
       await acceptBooking(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Booking not found' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: false,
+        error: {
+          code: 'BOOKING_NOT_FOUND',
+          message: 'Booking not found'
+        }
+      });
     });
   });
 
@@ -161,7 +176,10 @@ describe('Bookings Controller', () => {
 
       await rejectBooking(req, res);
 
-      expect(res.json).toHaveBeenCalledWith({ message: 'Booking rejected successfully' });
+      expect(res.json).toHaveBeenCalledWith({ 
+        success: true,
+        message: 'Booking rejected successfully' 
+      });
     });
   });
 
@@ -197,7 +215,11 @@ describe('Bookings Controller', () => {
 
       await getUserBookings(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(mockBookings);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockBookings,
+        pagination: expect.any(Object)
+      });
     });
 
     it('should return pro bookings', async () => {
@@ -231,7 +253,11 @@ describe('Bookings Controller', () => {
 
       await getUserBookings(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(mockBookings);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockBookings,
+        pagination: expect.any(Object)
+      });
     });
   });
 });
