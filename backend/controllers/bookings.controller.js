@@ -8,9 +8,10 @@ const createBooking = catchAsync(async (req, res) => {
   const client_id = req.user.id;
   
   // Validate service exists and is active
-  const [serviceRows] = await db.execute(
+  const serviceRows = await executeQuery(
     'SELECT pro_id, base_price FROM services WHERE id = ? AND is_active = 1',
-    [service_id]
+    [service_id],
+    'validate_service'
   );
   
   if (serviceRows.length === 0) {
@@ -23,9 +24,10 @@ const createBooking = catchAsync(async (req, res) => {
   // Validate package if provided
   let price = service.base_price;
   if (package_id) {
-    const [packageRows] = await db.execute(
+    const packageRows = await executeQuery(
       'SELECT price FROM packages WHERE id = ? AND service_id = ?',
-      [package_id, service_id]
+      [package_id, service_id],
+      'validate_package'
     );
     
     if (packageRows.length === 0) {
@@ -36,38 +38,44 @@ const createBooking = catchAsync(async (req, res) => {
   }
   
   // Check if slot is available
-  const [availabilityRows] = await db.execute(
+  const availabilityRows = await executeQuery(
     'SELECT id FROM availability WHERE pro_id = ? AND date = ? AND start_time <= ? AND end_time >= ? AND is_booked = 0',
-    [pro_id, date, start_time, end_time]
+    [pro_id, date, start_time, end_time],
+    'check_availability'
   );
   
   if (availabilityRows.length === 0) {
     throw new ConflictError('Selected time slot is not available');
   }
   
-  // Create booking
-  const [result] = await db.execute(
-    'INSERT INTO bookings (client_id, pro_id, service_id, package_id, date, start_time, end_time, total_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-    [client_id, pro_id, service_id, package_id, date, start_time, end_time, price]
-  );
+  // Use transaction for atomic booking creation
+  const result = await executeTransaction(async (connection) => {
+    // Create booking
+    const [bookingResult] = await connection.execute(
+      'INSERT INTO bookings (client_id, pro_id, service_id, package_id, date, start_time, end_time, total_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [client_id, pro_id, service_id, package_id, date, start_time, end_time, price]
+    );
+    
+    // Mark availability as booked
+    await connection.execute(
+      'UPDATE availability SET is_booked = 1 WHERE pro_id = ? AND date = ? AND start_time <= ? AND end_time >= ?',
+      [pro_id, date, start_time, end_time]
+    );
+    
+    // Get created booking
+    const [bookingRows] = await connection.execute(
+      'SELECT * FROM bookings WHERE id = ?',
+      [bookingResult.insertId]
+    );
+    
+    return bookingRows[0];
+  });
   
-  // Mark availability as booked
-  await db.execute(
-    'UPDATE availability SET is_booked = 1 WHERE pro_id = ? AND date = ? AND start_time <= ? AND end_time >= ?',
-    [pro_id, date, start_time, end_time]
-  );
-  
-  // Get created booking
-  const [bookingRows] = await db.execute(
-    'SELECT * FROM bookings WHERE id = ?',
-    [result.insertId]
-  );
-  
-  logInfo('Booking created successfully', { bookingId: result.insertId, clientId: client_id, proId: pro_id });
+  logInfo('Booking created successfully', { bookingId: result.id, clientId: client_id, proId: pro_id });
   
   res.status(201).json({
     success: true,
-    data: bookingRows[0]
+    data: result
   });
 });
 
@@ -75,29 +83,34 @@ const acceptBooking = catchAsync(async (req, res) => {
   const { id } = req.params;
   const pro_id = req.user.id;
   
-  // Check if booking exists and belongs to this pro
-  const [bookingRows] = await db.execute(
-    'SELECT * FROM bookings WHERE id = ? AND pro_id = ?',
-    [id, pro_id]
-  );
+  // Use transaction for atomic booking acceptance
+  const result = await executeTransaction(async (connection) => {
+    // Check if booking exists and belongs to this pro
+    const [bookingRows] = await connection.execute(
+      'SELECT * FROM bookings WHERE id = ? AND pro_id = ?',
+      [id, pro_id]
+    );
+    
+    if (bookingRows.length === 0) {
+      throw new NotFoundError('Booking not found');
+    }
+    
+    const booking = bookingRows[0];
+    
+    if (booking.status !== 'pending') {
+      throw new ValidationError('Booking is not in pending status');
+    }
+    
+    // Update booking status
+    await connection.execute(
+      'UPDATE bookings SET status = ? WHERE id = ?',
+      ['confirmed', id]
+    );
+    
+    return { bookingId: id, proId: pro_id };
+  });
   
-  if (bookingRows.length === 0) {
-    throw new NotFoundError('Booking not found');
-  }
-  
-  const booking = bookingRows[0];
-  
-  if (booking.status !== 'pending') {
-    throw new ValidationError('Booking is not in pending status');
-  }
-  
-  // Update booking status
-  await db.execute(
-    'UPDATE bookings SET status = ? WHERE id = ?',
-    ['confirmed', id]
-  );
-  
-  logInfo('Booking accepted', { bookingId: id, proId: pro_id });
+  logInfo('Booking accepted', { bookingId: result.bookingId, proId: result.proId });
   
   res.json({ 
     success: true,
@@ -109,35 +122,40 @@ const rejectBooking = catchAsync(async (req, res) => {
   const { id } = req.params;
   const pro_id = req.user.id;
   
-  // Check if booking exists and belongs to this pro
-  const [bookingRows] = await db.execute(
-    'SELECT * FROM bookings WHERE id = ? AND pro_id = ?',
-    [id, pro_id]
-  );
+  // Use transaction for atomic booking rejection
+  const result = await executeTransaction(async (connection) => {
+    // Check if booking exists and belongs to this pro
+    const [bookingRows] = await connection.execute(
+      'SELECT * FROM bookings WHERE id = ? AND pro_id = ?',
+      [id, pro_id]
+    );
+    
+    if (bookingRows.length === 0) {
+      throw new NotFoundError('Booking not found');
+    }
+    
+    const booking = bookingRows[0];
+    
+    if (booking.status !== 'pending') {
+      throw new ValidationError('Booking is not in pending status');
+    }
+    
+    // Update booking status
+    await connection.execute(
+      'UPDATE bookings SET status = ? WHERE id = ?',
+      ['rejected', id]
+    );
+    
+    // Free up the availability slot
+    await connection.execute(
+      'UPDATE availability SET is_booked = 0 WHERE pro_id = ? AND date = ? AND start_time = ? AND end_time = ?',
+      [pro_id, booking.date, booking.start_time, booking.end_time]
+    );
+    
+    return { bookingId: id, proId: pro_id };
+  });
   
-  if (bookingRows.length === 0) {
-    throw new NotFoundError('Booking not found');
-  }
-  
-  const booking = bookingRows[0];
-  
-  if (booking.status !== 'pending') {
-    throw new ValidationError('Booking is not in pending status');
-  }
-  
-  // Update booking status
-  await db.execute(
-    'UPDATE bookings SET status = ? WHERE id = ?',
-    ['rejected', id]
-  );
-  
-  // Free up the availability slot
-  await db.execute(
-    'UPDATE availability SET is_booked = 0 WHERE pro_id = ? AND date = ? AND start_time = ? AND end_time = ?',
-    [pro_id, booking.date, booking.start_time, booking.end_time]
-  );
-  
-  logInfo('Booking rejected', { bookingId: id, proId: pro_id });
+  logInfo('Booking rejected', { bookingId: result.bookingId, proId: result.proId });
   
   res.json({ 
     success: true,
