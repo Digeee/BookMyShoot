@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { globalErrorHandler } = require('./utils/errorHandler');
 const { logInfo, logError } = require('./utils/logger');
+const { initializeWebSocket } = require('./utils/websocket');
 
 dotenv.config();
 
@@ -74,7 +75,10 @@ app.use('*', (req, res) => {
 // Global error handling middleware
 app.use(globalErrorHandler);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   logInfo(`Server is running on port ${PORT}`);
   console.log(`Server is running on port ${PORT}`);
 });
+
+// Initialize WebSocket server
+initializeWebSocket(server);
