@@ -384,6 +384,28 @@ CREATE TABLE IF NOT EXISTS `bookmyshoot`.`admin_logs` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `bookmyshoot`.`chatbot_conversations`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `bookmyshoot`.`chatbot_conversations` ;
+
+CREATE TABLE IF NOT EXISTS `bookmyshoot`.`chatbot_conversations` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NULL,
+  `user_message` TEXT NOT NULL,
+  `bot_response` TEXT NOT NULL,
+  `intent` VARCHAR(100) NOT NULL DEFAULT 'unknown',
+  `context` JSON NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `fk_chatbot_conversations_users1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_chatbot_conversations_users1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `bookmyshoot`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

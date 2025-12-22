@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
+const chatbotAdminRoutes = require('./chatbot/chatbot.admin.routes');
 const { authenticate, authorize } = require('../middleware/auth.middleware');
 
 // All admin routes require authentication and admin authorization
@@ -14,5 +15,8 @@ router.delete('/users/:id', adminController.deleteUser);
 
 // Get site statistics
 router.get('/stats', adminController.getStats);
+
+// Chatbot admin routes
+router.use('/chatbot', chatbotAdminRoutes);
 
 module.exports = router;
