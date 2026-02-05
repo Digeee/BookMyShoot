@@ -128,19 +128,3 @@ The application supports three languages:
 - Tamil (தமிழ்)
 
 Language can be switched using the language selector in the navigation bar.
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a pull request
-
-## License
-
-This project is proprietary and confidential. All rights reserved.
-
-## Support
-
-For support, contact the development team or create an issue in the repository.
